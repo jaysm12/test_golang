@@ -2,6 +2,7 @@ package models
 
 import (
 	"otomo_golang/pkg/config"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -9,11 +10,13 @@ import (
 var db *gorm.DB
 
 type User struct {
-	gorm.Model
+	User_id   uint64 `gorm:"type:bigint;primary_key;AUTO_INCREMENT"`
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	FirstName string `json:"firstName"`
 	Lastname  string `json:"lastName"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func init() {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"otomo_golang/pkg/routes"
@@ -12,6 +13,8 @@ func main() {
 	r := mux.NewRouter()
 
 	routes.RegisterUserRoute(r)
-	http.Handle("/", r)
+	http.Handle("/api", r)
+
+	fmt.Println("Server running on port: 3000")
 	log.Fatal(http.ListenAndServe("localhost:3000", r))
 }
