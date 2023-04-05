@@ -2,14 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"otomo_golang/pkg/models"
 	"otomo_golang/pkg/utils"
-	"strconv"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -75,7 +72,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
 
 	if err != nil {
-		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -119,7 +115,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
 
 	if user.User_id == 0 || err != nil {
-		fmt.Println(err)
 		w.WriteHeader(http.StatusUnauthorized)
 		errorRes := ResponseError{
 			Success: false,
@@ -139,7 +134,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	tokenstring, err := token.SignedString([]byte("otomo"))
 
 	if err != nil {
-		fmt.Println(err)
 		panic(err)
 	}
 
@@ -156,30 +150,34 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	input := &ReqBodyLogin{}
 
-	vars := mux.Vars(r)
+	utils.ParseBody(r, input)
 
-	id := vars["user_id"]
-
-	user_id, err := strconv.ParseInt(id, 0, 0)
-
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
-	}
-
-	user := models.FindByID(user_id)
-
-	if user.User_id == 0 {
-		w.WriteHeader(http.StatusNotFound)
-
-		response := ResponseError{
+	if input.Password == "" || input.Username == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		errorRes := ResponseError{
 			Success: false,
-			Msg:     "User not found",
+			Msg:     "Please fill Username / Password",
 		}
 
-		res, _ := json.Marshal(response)
+		res, _ := json.Marshal(errorRes)
+		w.Write(res)
+		return
+	}
 
+	user := models.FindByUsername(input.Username)
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
+
+	if user.User_id == 0 || err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		errorRes := ResponseError{
+			Success: false,
+			Msg:     "Invalid Username / Password",
+		}
+
+		res, _ := json.Marshal(errorRes)
 		w.Write(res)
 		return
 	}
