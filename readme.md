@@ -24,6 +24,11 @@ cd test_golang_otomo
 ```
 go mod download
 ```
++ Change gorm database config in `/pkg/config/app.go` with your database
+
+```
+"<user>>:<password>@/otomo?charset=utf8&parseTime=true&loc=Local"
+```
 ### Usage
 To run the application, execute the following command:
 ```
