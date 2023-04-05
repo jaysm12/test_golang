@@ -11,7 +11,7 @@ var db *gorm.DB
 
 type User struct {
 	User_id   uint64 `gorm:"type:bigint;primary_key;AUTO_INCREMENT"`
-	Username  string `json:"username"`
+	Username  string `gorm:"unique;not_null"`
 	Password  string `json:"password"`
 	FirstName string `json:"firstName"`
 	Lastname  string `json:"lastName"`
