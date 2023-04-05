@@ -42,14 +42,23 @@ func ListUsers() []User {
 	return Users
 }
 
-func FindByID(ID int64) *User {
+func FindByID(ID int64) User {
 
 	var user User
 	db.Where("user_id = ?", ID).Find(&user)
 
-	return &user
+	return user
 }
 
 func (u *User) DeleteUser() {
 	db.Delete(&u)
+}
+
+func FindByUsername(username string) User {
+
+	var user User
+
+	db.Where("username = ?", username).Find(&user)
+
+	return user
 }
