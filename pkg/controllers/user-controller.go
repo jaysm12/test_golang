@@ -69,6 +69,20 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	isExist := models.FindByUsername(newUser.Username)
+
+	if isExist.User_id != 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		errorRes := ResponseError{
+			Success: false,
+			Msg:     "Username already taken!",
+		}
+
+		res, _ := json.Marshal(errorRes)
+		w.Write(res)
+		return
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
 
 	if err != nil {
@@ -97,7 +111,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	input := &ReqBodyLogin{}
 
 	utils.ParseBody(r, input)
-
 	if input.Password == "" || input.Username == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		errorRes := ResponseError{

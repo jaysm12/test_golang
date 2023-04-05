@@ -17,8 +17,8 @@ var excludeAuth = []string{"/api/user/register", "/api/user/login"}
 
 func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		for i, _ := range excludeAuth {
-			if r.RequestURI == excludeAuth[i] {
+		for _, v := range excludeAuth {
+			if r.RequestURI == v {
 				next.ServeHTTP(w, r)
 				return
 			}
