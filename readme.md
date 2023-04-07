@@ -1,5 +1,5 @@
 ## Simple Golang API - Take Home Test
-This repository contains a simple Golang API, developed as a take-home test for a recruitment process on PT. Otomo. The project demonstrates the creation and usage of a basic RESTful API using the Go programming language with Mysql.
+This repository contains a simple Golang API, developed as a take-home test for a recruitment process. The project demonstrates the creation and usage of a basic RESTful API using the Go programming language with Mysql.
 
 ### Requirements and Dependencies
 ```
